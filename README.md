@@ -79,5 +79,50 @@ As **the firewall is currently blocking all connections except for SSH**, if you
 
 ### Step 5 — Enabling External Access for Your Regular User
 Now that we have a regular user for daily use, we need to make sure we can SSH into the account directly.
-> Note: Until verifying that you can log in and use sudo with your new user, we recommend staying logged in as root. This way, if you have problems, you can troubleshoot and make any necessary changes as root.
+> Note: Until verifying that you can log in and use sudo with your new user, better stay logged in as root. This way, if you have problems, you can troubleshoot and make any necessary changes as root.
+
+The process for configuring SSH access for your new user depends on whether your server’s **root** account uses a password or SSH keys for authentication.
+#### If the root Account Uses Password Authentication
+If you logged in to your **root** account using a password, then password authentication is enabled for SSH. You can SSH to your new user account by opening up a new terminal session and using SSH with your new username:
+```shell
+$ ssh  fathah@your_server_ip
+```
+After entering your regular user’s password, you will be logged in. Remember, if you need to run a command with administrative privileges, type **sudo** before it like this:
+```
+$ sudo command_to_run
+```
+You will be prompted for your regular user password when using **sudo** for the first time each session (and periodically afterwards).
+To enhance your server’s security, **we strongly recommend setting up SSH keys instead of using password authentication**. Follow our guide on setting up SSH keys on Ubuntu 20.04 to learn how to configure key-based authentication.
+
+#### If the Root Account Uses SSH Key Authentication
+If you logged in to your **root** account using SSH keys, then password authentication is disabled for SSH. You will need to add a copy of your local public key to the new user’s ```~/.ssh/authorized_keys``` file to log in successfully.
+Since your public key is already in the **root** account’s ```~/.ssh/authorized_keys``` file on the server, we can copy that file and directory structure to our new user account in our existing session.
+The simplest way to copy the files with the correct ownership and permissions is with the rsync command. This will copy the **root** user’s ```.ssh``` directory, preserve the permissions, and modify the file owners, all in a single command. Make sure to change the highlighted portions of the command below to match your regular user’s name:
+
+>**Note:** The _rsync_ command treats sources and destinations that end with a trailing slash differently than those without a trailing slash. When using _rsync_ below, be sure that the source directory ```(~/.ssh)``` does not include a trailing slash (check to make sure you are not using ```~/.ssh/```).
+
+>If you accidentally add a trailing slash to the command, _rsync_ will copy the contents of the root account’s ```~/.ssh``` directory to the **sudo** user’s home directory instead of copying the entire ```~/.ssh``` directory structure. The files will be in the wrong location and SSH will not be able to find and use them.
+
+```
+rsync --archive --chown=fathah:fathah ~/.ssh /home/fathah
+```
+Now, open up a new terminal session on you local machine, and use SSH with your new username:
+
+```
+ssh fathah@your_server_ip
+```
+You should be logged in to the new user account without using a password. Remember, if you need to run a command with administrative privileges, type **sudo** before it like this:
+```
+$ sudo command_to_run
+
+```
+You will be prompted for your regular user password when using **sudo** for the first time each session (and periodically afterwards).
+
+## Where To Go From Here?
+At this point, you have a solid foundation for your server. You can install any of the software you need on your server now.
+
+
+
+
+
 
