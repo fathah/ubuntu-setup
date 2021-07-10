@@ -121,7 +121,7 @@ You will be prompted for your regular user password when using **sudo** for the 
 ## Where To Go From Here?
 At this point, you have a solid foundation for your server. You can install any of the software you need on your server now.
 
-
+#### (Reference)[https://www.digitalocean.com/community/tutorials/initial-server-setup-with-ubuntu-20-04]
 
 
 
